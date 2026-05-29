@@ -1,0 +1,20 @@
+# Local environment configuration
+.env
+
+# Vercel configuration/build files
+.vercel/
+
+# Python caching
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local SQLite databases (no longer active)
+*.db
+*.sqlite3
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/

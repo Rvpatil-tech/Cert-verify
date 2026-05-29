@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+        <h1 style="color: var(--primary-blue); font-size: 2.2rem;">Admin Dashboard</h1>
+        <p style="color: var(--text-muted);">Manage and issue certificates</p>
+    </div>
+    <a href="{{ url_for('export_csv') }}" class="action-btn">
+        <i class="fa-solid fa-file-export"></i> Export CSV
+    </a>
+</div>
+
+<div class="glass-card" style="margin-bottom: 3rem;">
+    <h3 style="color: var(--primary-blue); margin-bottom: 1.5rem; border-bottom: 2px solid var(--silver-light); padding-bottom: 0.5rem;">Issue New Certificate</h3>
+    
+    <form action="{{ url_for('add_certificate') }}" method="POST">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            
+            <div class="form-group">
+                <label for="participant_name" class="form-label">Participant Name *</label>
+                <input type="text" id="participant_name" name="participant_name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="program_name" class="form-label">Program Category *</label>
+                <select id="program_name" name="program_name" class="form-control" required onchange="toggleCustomProgram()">
+                    <option value="Rapid AI Mastery Program: 15 Days, 15 Projects">Rapid AI Mastery Program: 15 Days, 15 Projects</option>
+                    <option value="Competition Winner">Competition Winner</option>
+                    <option value="Bootcamp Completion">Bootcamp Completion</option>
+                    <option value="Workshop Participation">Workshop Participation</option>
+                    <option value="Special Session Attendee">Special Session Attendee</option>
+                    <option value="Course Completion">Course Completion</option>
+                    <option value="Internship Completion">Internship Completion</option>
+                    <option value="Other">Other (Custom)</option>
+                </select>
+                <input type="text" id="custom_program_name" name="custom_program_name" class="form-control" placeholder="Enter custom program name" style="display: none; margin-top: 0.5rem;">
+            </div>
+
+            <div class="form-group">
+                <label for="issue_date" class="form-label">Issue Date *</label>
+                <input type="date" id="issue_date" name="issue_date" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="repo_link" class="form-label">Repository / Project Link (Optional)</label>
+                <input type="url" id="repo_link" name="repo_link" class="form-control" placeholder="https://github.com/...">
+            </div>
+            
+        </div>
+        <div style="margin-top: 1rem; text-align: right;">
+            <button type="submit" class="btn-primary" style="width: auto;">
+                <i class="fa-solid fa-plus"></i> Generate Certificate
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="glass-card">
+    <h3 style="color: var(--primary-blue); margin-bottom: 1rem;">Issued Certificates</h3>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Certificate ID</th>
+                    <th>Participant</th>
+                    <th>Program</th>
+                    <th>Date</th>
+                    <th>Link</th>
+                    <th>QR Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cert in certificates %}
+                <tr>
+                    <td style="font-weight: 600; color: var(--primary-blue);">{{ cert.certificate_id }}</td>
+                    <td>{{ cert.participant_name }}</td>
+                    <td><span style="font-size: 0.9em; padding: 4px 8px; background: var(--silver-light); border-radius: 4px; color: var(--text-dark);">{{ cert.program_name }}</span></td>
+                    <td>{{ cert.issue_date }}</td>
+                    <td>
+                        {% if cert.repo_link %}
+                        <a href="{{ cert.repo_link }}" target="_blank" style="color: var(--primary-blue);" title="View Repository"><i class="fa-brands fa-github" style="font-size: 1.2rem;"></i></a>
+                        {% else %}
+                        <span style="color: var(--silver);">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('index', cert_id=cert.certificate_id, _external=True) }}" target="_blank" style="color: var(--accent-orange); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
+                            <i class="fa-solid fa-qrcode"></i> View
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No certificates issued yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Set today's date as default for issue date
+    document.getElementById('issue_date').valueAsDate = new Date();
+
+    function toggleCustomProgram() {
+        var select = document.getElementById('program_name');
+        var customInput = document.getElementById('custom_program_name');
+        if (select.value === 'Other') {
+            customInput.style.display = 'block';
+            customInput.required = true;
+        } else {
+            customInput.style.display = 'none';
+            customInput.required = false;
+            customInput.value = '';
+        }
+    }
+</script>
+{% endblock %}

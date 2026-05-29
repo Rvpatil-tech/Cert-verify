@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <div class="glass-card">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="color: var(--primary-blue); font-size: 2rem; margin-bottom: 0.5rem;">Verify Certificate</h1>
+            <p style="color: var(--text-muted);">Enter the Certificate ID to verify its authenticity.</p>
+        </div>
+
+        <form action="{{ url_for('verify_cert') }}" method="POST">
+            <div class="form-group">
+                <label for="certificate_id" class="form-label">Certificate ID</label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-certificate" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--silver);"></i>
+                    <input type="text" id="certificate_id" name="certificate_id" class="form-control" placeholder="e.g. TT-AI-2026-001" style="padding-left: 3rem;" value="{{ cert_id }}" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-shield-check"></i> Verify Certificate
+            </button>
+        </form>
+
+        {% if cert %}
+        <div class="cert-result success">
+            <div class="status-badge verified">
+                <i class="fa-solid fa-circle-check"></i> Verified Authentic
+            </div>
+            <h3 style="color: var(--primary-blue); margin-bottom: 0.5rem;">{{ cert.participant_name }}</h3>
+            <p style="color: var(--text-muted);">Successfully completed the program</p>
+            
+            <div class="cert-details">
+                <div class="detail-row">
+                    <span class="detail-label">Certificate ID</span>
+                    <span class="detail-value">{{ cert.certificate_id }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Program Name</span>
+                    <span class="detail-value">{{ cert.program_name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Issue Date</span>
+                    <span class="detail-value">{{ cert.issue_date }}</span>
+                </div>
+                {% if cert.repo_link %}
+                <div class="detail-row">
+                    <span class="detail-label">Project Repository</span>
+                    <span class="detail-value">
+                        <a href="{{ cert.repo_link }}" target="_blank" style="color: var(--primary-blue); text-decoration: none;">
+                            <i class="fa-brands fa-github"></i> View Work
+                        </a>
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% elif error %}
+        <div class="cert-result error">
+            <div class="status-badge invalid">
+                <i class="fa-solid fa-circle-xmark"></i> Not Found
+            </div>
+            <p style="color: var(--text-dark); font-weight: 500;">{{ error }}</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Please check the ID and try again, or contact support if you believe this is an error.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

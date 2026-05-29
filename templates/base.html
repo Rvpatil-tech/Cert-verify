@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tensor Talezz - Certificate Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-animations">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    
+    <header class="glass-header">
+        <div class="header-container">
+            <a href="{{ url_for('index') }}" class="logo-area">
+                <i class="fa-solid fa-feather-pointed logo-icon"></i>
+                <div class="logo-text">
+                    <span class="tensor">TENSOR</span>
+                    <span class="talezz">Talezz</span>
+                </div>
+            </a>
+            <nav>
+                {% if session.get('admin_logged_in') %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="nav-btn">Dashboard</a>
+                    <a href="{{ url_for('admin_logout') }}" class="nav-btn btn-outline">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('admin_login') }}" class="nav-btn">Admin Login</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for message in messages %}
+                <div class="alert alert-info">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="glass-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 Tensor Talezz | Certificate Verification Portal</p>
+            <p class="contact-info"><i class="fa-regular fa-envelope"></i> Contact: <a href="mailto:tensortalezz@gmail.com">tensortalezz@gmail.com</a></p>
+        </div>
+    </footer>
+</body>
+</html>
